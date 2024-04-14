@@ -9,7 +9,8 @@ const BookSchema = new Schema({
     },
     BookId: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     }
 });
 
