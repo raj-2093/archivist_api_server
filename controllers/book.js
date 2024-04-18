@@ -15,12 +15,15 @@ const handleAddBook = async (req, res) => {
       await Book.create({
         BookName: req.body.BookName,
         BookId: req.body.BookId,
+        BookAuthor: req.body.BookAuthor,
       });
-      res.status(200).json({ success: true });
+      res
+        .status(200)
+        .json({ success: true, message: "Book added Successfully" });
     }
   } catch (err) {
     console.log("Add book Error -- ", err);
-    res.status(500).json({ success: false });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -32,7 +35,10 @@ const handleAddBook = async (req, res) => {
 const handleDeleteBook = async (req, res) => {
   try {
     await Book.deleteOne({ BookId: req.params.id });
-    res.status(200).json({ success: true });
+    res.status(200).json({
+      success: true,
+      message: `Book with id ${req.params.id} is deleted successfully`,
+    });
   } catch (err) {
     console.log("Delete book Error -- ", err);
     res.status(500).json({ success: false });
