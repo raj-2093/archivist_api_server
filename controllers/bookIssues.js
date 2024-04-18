@@ -33,7 +33,7 @@ const handleBookReturn = async (req, res) => {
       req.body.BookId == issue.BookId &&
       req.body.EnrollmentNumber == issue.EnrollmentNumber
     ) {
-      await BookIssues.deleteOne({ BookId: req.params.id });
+      await BookIssues.deleteOne({ BookId: req.body.BookId });
       res.status(200).json({
         success: true,
         message: `Book with id ${req.body.BookId} is returned successfully by student with enr no ${req.body.EnrollmentNumber}`,

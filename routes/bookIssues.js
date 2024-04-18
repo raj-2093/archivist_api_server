@@ -7,3 +7,5 @@ const {
 const router = express.Router();
 
 router.route("/").post(handleBookIssue).delete(handleBookReturn);
+
+module.exports = router;
