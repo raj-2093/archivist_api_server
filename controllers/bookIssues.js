@@ -7,41 +7,58 @@ const BookIssues = require("../models/BookIssues");
  */
 const handleBookIssue = async (req, res) => {
   try {
-    if ((await BookIssues.find({ BookId: req.body.BookId })).toString()) {
-      res
-        .status(400)
-        .json({ success: false, message: "Book with this id already issued" });
-    } else {
-      await BookIssues.create({
-        EnrollmentNumber: req.body.EnrollmentNumber,
-        BookId: req.body.BookId,
-      });
-      res
-        .status(200)
-        .json({ success: true, message: "Book issued Successfully" });
-    }
+    await BookIssues.create({
+      EnrollmentNumber: req.body.EnrollmentNumber,
+      BookId: req.body.BookId,
+    });
+    res
+      .status(200)
+      .json({ success: true, message: "Book issued Successfully" });
   } catch (err) {
     console.log("Add book Error -- ", err);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
+/**
+ *
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ */
+const handleGetAllIssues = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: "Send all the issues successfully",
+      data: await BookIssues.find({}),
+    });
+  } catch (err) {}
+};
+
 const handleBookReturn = async (req, res) => {
   try {
     const issue = await BookIssues.findOne({ BookId: req.body.BookId });
-    if (
-      req.body.BookId == issue.BookId &&
-      req.body.EnrollmentNumber == issue.EnrollmentNumber
-    ) {
-      await BookIssues.deleteOne({ BookId: req.body.BookId });
-      res.status(200).json({
-        success: true,
-        message: `Book with id ${req.body.BookId} is returned successfully by student with enr no ${req.body.EnrollmentNumber}`,
-      });
+    console.log("Issue : ", issue);
+    if (issue) {
+      if (
+        req.body.BookId == issue.BookId &&
+        req.body.EnrollmentNumber == issue.EnrollmentNumber
+      ) {
+        await BookIssues.deleteOne({ BookId: req.body.BookId });
+        res.status(200).json({
+          success: true,
+          message: `Book with id ${req.body.BookId} is returned successfully by student with enr no ${req.body.EnrollmentNumber}`,
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: `Book with id ${req.body.BookId} is not associated with enr no ${req.body.EnrollmentNumber}`,
+        });
+      }
     } else {
       res.status(400).json({
         success: false,
-        message: `Book with id ${req.body.BookId} is not associated with enr no ${req.body.EnrollmentNumber}`,
+        message: `Book with id ${req.body.BookId} is not issued`,
       });
     }
   } catch (err) {
@@ -53,4 +70,5 @@ const handleBookReturn = async (req, res) => {
 module.exports = {
   handleBookIssue,
   handleBookReturn,
+  handleGetAllIssues,
 };

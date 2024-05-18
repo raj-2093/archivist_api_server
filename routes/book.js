@@ -6,10 +6,20 @@ const {
   handleGetBook,
   handleDeleteBook,
 } = require("../controllers/book");
+const {
+  validateAddBookRequest,
+  validateDeleteBookRequest,
+} = require("../middlewares/book");
 
 const router = express.Router();
 
-router.route("/").get(handleGetAllBooks).post(handleAddBook);
-router.route("/:id").get(handleGetBook).delete(handleDeleteBook);
+router
+  .route("/")
+  .get(handleGetAllBooks)
+  .post(validateAddBookRequest, handleAddBook);
+router
+  .route("/:id")
+  .get(handleGetBook)
+  .delete(validateDeleteBookRequest, handleDeleteBook);
 
 module.exports = router;
